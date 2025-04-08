@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Button } from "react-native";
 import Dropdown from "../dropdown";
 import { countries } from "../utils/countries";
+import axios from "axios";
 
 const formattedCountries = countries.map((c) => ({
     value: c.label,
@@ -10,7 +11,55 @@ const formattedCountries = countries.map((c) => ({
   
 export default function ContactScreen() {
     const [name, setName] = useState<string>('');
+    const [country, setCountry] = useState<any>({})
+    const [pet, setPet] = useState<any>({})
 
+    const onSubmit = async () => {
+      if (!name || !country || !pet) {
+        alert('Please fill all fields');
+        return;
+      }
+  
+      const formData = {
+        name,
+        country: country.value,
+        pet: pet.label,
+      };
+  
+      // try {
+      //   const response = await fetch('https://your-api-endpoint.com/submit', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(formData),
+      //   });
+  
+      //   if (response.ok) {
+      //     const data = await response.json();
+      //     console.log('Success:', data);
+      //     alert('Form submitted successfully!');
+      //   }
+      // } catch (error) {
+      //   console.error('Request failed', error);
+      //   alert('Something went wrong!');
+      // }
+
+      try {
+        const response = await axios.post('https://your-api-endpoint.com/submit', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        console.log('Success:', response.data);
+        alert('Form submitted successfully!');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to submit the form');
+      }
+    }
+    
     return (
         <View>
             <Text>Dynamic Form</Text>
@@ -21,7 +70,7 @@ export default function ContactScreen() {
             />
             <Dropdown 
                 data={formattedCountries}
-                onChange={console.log}
+                onChange={setCountry}
                 placeholder="select country"
             />
             <Dropdown 
@@ -30,9 +79,10 @@ export default function ContactScreen() {
                 { value: "🦮", label: "🦮 un Perro" },
                 { value: "🐍", label: "🐍 una serpiente" },
               ]}
-              onChange={console.log}
+              onChange={setPet}
               placeholder="select pet"
             />
+            <Button title="submit" onPress={onSubmit}/>
         </View>
     )
 }
