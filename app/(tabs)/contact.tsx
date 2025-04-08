@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import Dropdown from "../dropdown";
+import { countries } from "../utils/countries";
 
+const formattedCountries = countries.map((c) => ({
+    value: c.label,
+    label: `${c.flag} ${c.label}`,
+  }));
+  
 export default function ContactScreen() {
     const [name, setName] = useState<string>('');
 
@@ -12,6 +19,59 @@ export default function ContactScreen() {
                 onChangeText={setName}
                 value={name}
             />
+            <Dropdown 
+                data={formattedCountries}
+                onChange={console.log}
+                placeholder="select country"
+            />
+            <Dropdown 
+              data ={[
+                { value: "🐈", label: "🐈 un Gato" },
+                { value: "🦮", label: "🦮 un Perro" },
+                { value: "🐍", label: "🐍 una serpiente" },
+              ]}
+              onChange={console.log}
+              placeholder="select pet"
+            />
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    backdrop: {
+        padding: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+      },
+      optionItem: {
+        height: 40,
+        justifyContent: "center",
+      },
+      separator: {
+        height: 4,
+      },
+      options: {
+        position: "absolute",
+        // top: 53,
+        backgroundColor: "white",
+        width: "100%",
+        padding: 10,
+        borderRadius: 6,
+        maxHeight: 250,
+      },
+      text: {
+        fontSize: 15,
+        opacity: 0.8,
+      },
+      button: {
+        height: 50,
+        justifyContent: "space-between",
+        backgroundColor: "#fff",
+        flexDirection: "row",
+        width: "100%",
+        alignItems: "center",
+        paddingHorizontal: 15,
+        borderRadius: 8,
+      },
+})
