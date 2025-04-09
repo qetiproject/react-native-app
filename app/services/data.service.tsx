@@ -23,3 +23,21 @@ export const CommentService = async () => {
         throw(error);
     }
 }
+
+export const test = async (): Promise<any> => {
+    const response = fetch(`${apiUrl}/todos`)
+    return (await response).json()
+}
+
+export const addTask = async(data: any) => {
+    try {
+        const response = axios.post(`${apiUrl}`, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        console.log(response, "response")
+    }catch(error) {
+
+    }
+}
