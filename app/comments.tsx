@@ -1,3 +1,4 @@
+import React from "react";
 import { FlatList, View, Text } from "react-native"
 
 export interface Comment {
@@ -8,7 +9,7 @@ export interface Comment {
     body: string;
 }
 
-const Comments = ({data}: any) => {
+const Comments = React.memo(({ data }: any) => {
     return (
         <FlatList
             data={data}
@@ -22,6 +23,6 @@ const Comments = ({data}: any) => {
             )}
         ></FlatList>
     )
-}
+})
 
 export default Comments
