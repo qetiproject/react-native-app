@@ -1,69 +1,55 @@
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    FlatList,
-} from "react-native";
-import React, {  useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { TouchableOpacity, Text, FlatList, View } from "react-native";
 import { styles } from "./dropdown-styles";
 
-type OptionItem = {
-    value: string;
-    label: string;
-  };
-  
-  interface DropDownProps {
-    data: OptionItem[];
-    onChange: (item: OptionItem) => void;
-    placeholder: string;
-  }
-  
-export default function Dropdown({
-    data,
-    onChange,
-    placeholder,
-  }: DropDownProps) {
-    const [expanded, setIsExpanded] = useState<boolean>(false);
-    const [selectedValue, setValue] = useState<string>('');
+interface DropdownData {
+  label: string;
+  value: string;
+}
+
+interface IDropdownField {
+  data: DropdownData[];
+  onChange: (value: string) => void;
+}
+
+const Dropdown: React.FC<IDropdownField> = React.memo(({data, onChange}) => {
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
+    const [selectedValue, setSelectedValue] = useState<string>("");
 
     const handleToggle = () => setIsExpanded((prev) => !prev);
 
-    const handleSelect = (item: OptionItem) => {
-        onChange(item);
-        setValue(item.label);
+    const handleSelect = (item: DropdownData) => {
+        setSelectedValue(item.label);
         setIsExpanded(false);
+        onChange(item.value); 
     };
-    
-    const renderItem = ({ item }: { item: OptionItem }) => (
-        <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => handleSelect(item)}
-        >
-            <Text>{item.label}</Text>
-        </TouchableOpacity>
-    )
-    return (
-        <View>
-            <TouchableOpacity 
-                style={styles.button}
-                activeOpacity={0.8}
-                onPress={handleToggle}
-            >
-                 <Text style={styles.text}>{selectedValue || placeholder}</Text>
-                <AntDesign name={expanded ? "caretup" : "caretdown"}/>
-            </TouchableOpacity>
 
-            { expanded ? (
-                <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.value}
-                    renderItem={renderItem}
-                    ItemSeparatorComponent={() => (
-                        <View style={styles.separator} />
-                    )}
-                />
-            )  : null}
-        </View>
+    const renderItem = ({item}: {item: DropdownData}) => {
+       return (
+        <TouchableOpacity onPress={() => handleSelect(item)} style={styles.dropdownItem}>
+            <Text style={styles.dropdownText}>{item.label}</Text>
+        </TouchableOpacity>
+       )
+    }
+
+    return (
+       <View>
+         <TouchableOpacity
+            style={styles.touch}
+            onPress={handleToggle}
+        >
+            <Text>{selectedValue || "select an option"}</Text>
+        </TouchableOpacity>
+        { isExpanded ?(
+            <FlatList 
+                data={data}
+                keyExtractor={item => item.value}
+                renderItem={renderItem}
+            />
+        ) : null}
+       </View>
     )
-  }
+})
+
+export default Dropdown
+
