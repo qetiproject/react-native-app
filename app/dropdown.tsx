@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { TouchableOpacity, Text, FlatList, View } from "react-native";
 import { styles } from "./dropdown-styles";
 
@@ -16,13 +16,15 @@ const Dropdown: React.FC<IDropdownField> = React.memo(({data, onChange}) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [selectedValue, setSelectedValue] = useState<string>("");
 
-    const handleToggle = () => setIsExpanded((prev) => !prev);
+    const handleToggle = useCallback(() => {
+        setIsExpanded((prev) => !prev)
+    }, []) 
 
-    const handleSelect = (item: DropdownData) => {
+    const handleSelect = useCallback((item: DropdownData) => {
         setSelectedValue(item.label);
         setIsExpanded(false);
         onChange(item.value); 
-    };
+    }, [onChange]) // onchange ცვლილებისას გაეშვება
 
     const renderItem = ({item}: {item: DropdownData}) => {
        return (
